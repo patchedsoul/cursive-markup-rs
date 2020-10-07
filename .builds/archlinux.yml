@@ -1,0 +1,41 @@
+# Copyright (C) 2020 Robin Krahl <robin.krahl@ireas.org>
+# SPDX-License-Identifier: CC0-1.0
+image: archlinux
+packages:
+  - gnupg
+  - reuse
+  - rustup
+sources:
+  - https://git.sr.ht/~ireas/cursive-markup-rs
+tasks:
+  - setup: |
+      rustup set profile minimal
+      rustup default stable
+      rustup component add rustfmt
+      rustup component add clippy
+  - version: |
+      rustc -V
+  - verify: |
+      cd cursive-markup-rs
+      curl -s "https://pgp.ireas.org/0x6D533958F070C57C.txt" | gpg --import
+      git verify-commit HEAD || [ `git config user.email` == "builds@sr.ht" ]
+  - reuse: |
+      cd cursive-markup-rs
+      reuse lint
+  - build: |
+      cd cursive-markup-rs
+      cargo build --release
+      cargo build --release --no-default-features
+  - test: |
+      cd cursive-markup-rs
+      cargo test
+  - clippy: |
+      cd cursive-markup-rs
+      cargo clippy -- -D warnings
+  - format: |
+      cd cursive-markup-rs
+      cargo fmt -- --check
+triggers:
+  - action: email
+    condition: failure
+    to: robin.krahl@ireas.org

@@ -1,0 +1,42 @@
+# SPDX-FileCopyrightText: 2020 Robin Krahl <robin.krahl@ireas.org>
+# SPDX-License-Identifier: CC0-1.0
+
+[package]
+name = "cursive-markup"
+version = "0.1.0"
+authors = ["Robin Krahl <robin.krahl@ireas.org>"]
+edition = "2018"
+description = "Markup view for cursive, supporting HTML"
+homepage = "https://sr.ht/~ireas/cursive-html-rs"
+repository = "https://git.sr.ht/~ireas/cursive-html-rs"
+documentation = "https://docs.rs/cursive-html-rs"
+keywords = ["tui", "markup", "html", "cursive"]
+categories = ["command-line-interface"]
+license = "Apache-2.0 OR MIT"
+exclude = [".builds/*"]
+readme = "README.md"
+
+[dependencies]
+unicode-width = "0.1"
+
+[dependencies.cursive]
+version = "0.15"
+default-features = false
+
+[dependencies.html2text]
+version = "0.2"
+optional = true
+
+[features]
+default = ["html"]
+html = ["html2text"]
+
+[dev-dependencies]
+argparse = "0.2"
+ureq = "1"
+url = "2"
+
+[dev-dependencies.cursive]
+version = "*"
+default-features = false
+features = ["termion-backend"]
