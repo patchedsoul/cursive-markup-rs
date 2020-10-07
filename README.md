@@ -47,7 +47,7 @@ implementation.
 
 ## Minimum Supported Rust Version
 
-This crate supports Rust 1.40.0 or later.
+This crate supports Rust 1.42.0 or later.
 
 ## Contributing
 
