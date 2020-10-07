@@ -12,6 +12,11 @@ render HTML.
 
 [Documentation](https://docs.rs/cursive_markup/latest/cursive_markup)
 
+For example, this page could be rendered like this:
+
+<img alt="A screenshot of this readme rendered with cursive-markup"
+     src="https://git.sr.ht/~ireas/cursive-markup-rs/blob/master/cursive-markup.jpg"/>
+
 ## Example
 
 <!-- keep in sync with the crate documentation -->
