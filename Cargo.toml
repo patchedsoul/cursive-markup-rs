@@ -7,9 +7,9 @@ version = "0.1.0"
 authors = ["Robin Krahl <robin.krahl@ireas.org>"]
 edition = "2018"
 description = "Markup view for cursive, supporting HTML"
-homepage = "https://sr.ht/~ireas/cursive-html-rs"
-repository = "https://git.sr.ht/~ireas/cursive-html-rs"
-documentation = "https://docs.rs/cursive-html-rs"
+homepage = "https://sr.ht/~ireas/cursive-markup-rs"
+repository = "https://git.sr.ht/~ireas/cursive-markup-rs"
+documentation = "https://docs.rs/cursive-markup"
 keywords = ["tui", "markup", "html", "cursive"]
 categories = ["command-line-interface"]
 license = "Apache-2.0 OR MIT"
@@ -37,6 +37,6 @@ ureq = "1"
 url = "2"
 
 [dev-dependencies.cursive]
-version = "*"
+version = "0.15"
 default-features = false
 features = ["termion-backend"]
