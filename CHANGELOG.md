@@ -3,7 +3,9 @@ SPDX-FileCopyrightText: 2020-2021 Robin Krahl <robin.krahl@ireas.org>
 SPDX-License-Identifier: CC0-1.0
 -->
 
-# Unreleased
+# v0.2.0 (2021-06-06)
+
+This minor releases makes this crate compatible with `cursive_core` 0.2.0.
 
 - Replace the `cursive` dependency with `cursive_core`.
 - Update the `cursive_core` dependency to v0.2.0.

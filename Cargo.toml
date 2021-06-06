@@ -3,7 +3,7 @@
 
 [package]
 name = "cursive-markup"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Robin Krahl <robin.krahl@ireas.org>"]
 edition = "2018"
 description = "Markup view for cursive, supporting HTML"
