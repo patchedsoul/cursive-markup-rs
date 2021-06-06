@@ -16,7 +16,7 @@
 //! [`Renderer`]: struct.Renderer.html
 //! [`Converter`]: trait.Converter.html
 
-use cursive::theme;
+use cursive_core::theme;
 use html2text::render::text_renderer;
 
 use crate::{Element, RenderedDocument};
@@ -91,7 +91,7 @@ impl<D: text_renderer::TextDecorator + Clone, C: Converter<D::Annotation>> Rende
 impl<D: text_renderer::TextDecorator + Clone, C: Converter<D::Annotation>> super::Renderer
     for Renderer<D, C>
 {
-    fn render(&self, constraint: cursive::XY<usize>) -> RenderedDocument {
+    fn render(&self, constraint: cursive_core::XY<usize>) -> RenderedDocument {
         let mut doc = RenderedDocument::new(constraint);
 
         let lines = self

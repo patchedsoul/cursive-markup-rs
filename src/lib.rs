@@ -79,7 +79,7 @@ pub mod html;
 
 use std::rc;
 
-use cursive::theme;
+use cursive_core::theme;
 use unicode_width::UnicodeWidthStr as _;
 
 /// A view for hypertext that has been rendered by a [`Renderer`][].
@@ -118,7 +118,7 @@ pub struct MarkupView<R: Renderer + 'static> {
 /// argument is the target of the link, typically a URL.
 ///
 /// [`Cursive`]: https://docs.rs/cursive/latest/cursive/struct.Cursive.html
-pub type LinkCallback = dyn Fn(&mut cursive::Cursive, &str);
+pub type LinkCallback = dyn Fn(&mut cursive_core::Cursive, &str);
 
 /// A renderer that produces a hypertext document.
 pub trait Renderer {
@@ -127,7 +127,7 @@ pub trait Renderer {
     /// This method is called by [`MarkupView`][] every time the provided width changes.
     ///
     /// [`MarkupView`]: struct.MarkupView.html
-    fn render(&self, constraint: cursive::XY<usize>) -> RenderedDocument;
+    fn render(&self, constraint: cursive_core::XY<usize>) -> RenderedDocument;
 }
 
 /// A rendered hypertext document that consists of lines of formatted text and links.
@@ -135,8 +135,8 @@ pub trait Renderer {
 pub struct RenderedDocument {
     lines: Vec<Vec<RenderedElement>>,
     link_handler: LinkHandler,
-    size: cursive::XY<usize>,
-    constraint: cursive::XY<usize>,
+    size: cursive_core::XY<usize>,
+    constraint: cursive_core::XY<usize>,
 }
 
 /// A hypertext element: a formatted string with an optional link target.
@@ -162,7 +162,7 @@ struct LinkHandler {
 
 #[derive(Clone, Debug)]
 struct Link {
-    position: cursive::XY<usize>,
+    position: cursive_core::XY<usize>,
     width: usize,
     target: String,
 }
@@ -194,7 +194,7 @@ impl<R: Renderer + 'static> MarkupView<R> {
     /// Note that this callback is only triggered if the link focus is changed with the arrow keys.
     /// It is not triggered if the view takes focus.  The callback will receive the target of the
     /// link as an argument.
-    pub fn on_link_focus<F: Fn(&mut cursive::Cursive, &str) + 'static>(&mut self, f: F) {
+    pub fn on_link_focus<F: Fn(&mut cursive_core::Cursive, &str) + 'static>(&mut self, f: F) {
         self.on_link_focus = Some(rc::Rc::new(f));
     }
 
@@ -202,7 +202,7 @@ impl<R: Renderer + 'static> MarkupView<R> {
     ///
     /// This callback is triggered if a link is focused and the users presses the Enter key.  The
     /// callback will receive the target of the link as an argument.
-    pub fn on_link_select<F: Fn(&mut cursive::Cursive, &str) + 'static>(&mut self, f: F) {
+    pub fn on_link_select<F: Fn(&mut cursive_core::Cursive, &str) + 'static>(&mut self, f: F) {
         self.on_link_select = Some(rc::Rc::new(f));
     }
 
@@ -213,7 +213,7 @@ impl<R: Renderer + 'static> MarkupView<R> {
         self.maximum_width = Some(width);
     }
 
-    fn render(&mut self, mut constraint: cursive::XY<usize>) -> cursive::XY<usize> {
+    fn render(&mut self, mut constraint: cursive_core::XY<usize>) -> cursive_core::XY<usize> {
         let mut last_focus = 0;
 
         if let Some(width) = self.maximum_width {
@@ -241,8 +241,8 @@ impl<R: Renderer + 'static> MarkupView<R> {
     }
 }
 
-impl<R: Renderer + 'static> cursive::View for MarkupView<R> {
-    fn draw(&self, printer: &cursive::Printer<'_, '_>) {
+impl<R: Renderer + 'static> cursive_core::View for MarkupView<R> {
+    fn draw(&self, printer: &cursive_core::Printer<'_, '_>) {
         let doc = &self.doc.as_ref().expect("layout not called before draw");
         for (y, line) in doc.lines.iter().enumerate() {
             let mut x = 0;
@@ -250,7 +250,7 @@ impl<R: Renderer + 'static> cursive::View for MarkupView<R> {
                 let mut style = element.style;
                 if let Some(link_idx) = element.link_idx {
                     if printer.focused && doc.link_handler.focus == link_idx {
-                        style = style.combine(cursive::theme::PaletteColor::Highlight);
+                        style = style.combine(theme::PaletteColor::Highlight);
                     }
                 }
                 printer.with_style(style, |printer| printer.print((x, y), &element.text));
@@ -259,24 +259,24 @@ impl<R: Renderer + 'static> cursive::View for MarkupView<R> {
         }
     }
 
-    fn layout(&mut self, constraint: cursive::XY<usize>) {
+    fn layout(&mut self, constraint: cursive_core::XY<usize>) {
         self.render(constraint);
     }
 
-    fn required_size(&mut self, constraint: cursive::XY<usize>) -> cursive::XY<usize> {
+    fn required_size(&mut self, constraint: cursive_core::XY<usize>) -> cursive_core::XY<usize> {
         self.render(constraint)
     }
 
-    fn take_focus(&mut self, direction: cursive::direction::Direction) -> bool {
+    fn take_focus(&mut self, direction: cursive_core::direction::Direction) -> bool {
         self.doc
             .as_mut()
             .map(|doc| doc.link_handler.take_focus(direction))
             .unwrap_or_default()
     }
 
-    fn on_event(&mut self, event: cursive::event::Event) -> cursive::event::EventResult {
-        use cursive::direction::Absolute;
-        use cursive::event::{Callback, Event, EventResult, Key};
+    fn on_event(&mut self, event: cursive_core::event::Event) -> cursive_core::event::EventResult {
+        use cursive_core::direction::Absolute;
+        use cursive_core::event::{Callback, Event, EventResult, Key};
 
         let link_handler = if let Some(doc) = self.doc.as_mut() {
             if doc.link_handler.links.is_empty() {
@@ -317,11 +317,11 @@ impl<R: Renderer + 'static> cursive::View for MarkupView<R> {
         }
     }
 
-    fn important_area(&self, _: cursive::XY<usize>) -> cursive::Rect {
+    fn important_area(&self, _: cursive_core::XY<usize>) -> cursive_core::Rect {
         if let Some(doc) = &self.doc {
             doc.link_handler.important_area()
         } else {
-            cursive::Rect::from((0, 0))
+            cursive_core::Rect::from((0, 0))
         }
     }
 }
@@ -331,7 +331,7 @@ impl RenderedDocument {
     ///
     /// The size constraint is used to check whether a cached document can be reused or whether it
     /// has to be rendered for the new constraint.  It is *not* enforced by this struct!
-    pub fn new(constraint: cursive::XY<usize>) -> RenderedDocument {
+    pub fn new(constraint: cursive_core::XY<usize>) -> RenderedDocument {
         RenderedDocument {
             lines: Vec::new(),
             link_handler: Default::default(),
@@ -417,11 +417,11 @@ impl LinkHandler {
         self.links.len() - 1
     }
 
-    pub fn take_focus(&mut self, direction: cursive::direction::Direction) -> bool {
+    pub fn take_focus(&mut self, direction: cursive_core::direction::Direction) -> bool {
         if self.links.is_empty() {
             false
         } else {
-            use cursive::direction::{Absolute, Direction, Relative};
+            use cursive_core::direction::{Absolute, Direction, Relative};
             let rel = match direction {
                 Direction::Abs(abs) => match abs {
                     Absolute::Up | Absolute::Left | Absolute::None => Relative::Front,
@@ -437,8 +437,8 @@ impl LinkHandler {
         }
     }
 
-    pub fn move_focus(&mut self, direction: cursive::direction::Absolute) -> bool {
-        use cursive::direction::{Absolute, Relative};
+    pub fn move_focus(&mut self, direction: cursive_core::direction::Absolute) -> bool {
+        use cursive_core::direction::{Absolute, Relative};
 
         match direction {
             Absolute::Left => self.move_focus_horizontal(Relative::Front),
@@ -449,8 +449,8 @@ impl LinkHandler {
         }
     }
 
-    fn move_focus_horizontal(&mut self, direction: cursive::direction::Relative) -> bool {
-        use cursive::direction::Relative;
+    fn move_focus_horizontal(&mut self, direction: cursive_core::direction::Relative) -> bool {
+        use cursive_core::direction::Relative;
 
         if self.links.is_empty() {
             return false;
@@ -479,8 +479,8 @@ impl LinkHandler {
         }
     }
 
-    fn move_focus_vertical(&mut self, direction: cursive::direction::Relative) -> bool {
-        use cursive::direction::Relative;
+    fn move_focus_vertical(&mut self, direction: cursive_core::direction::Relative) -> bool {
+        use cursive_core::direction::Relative;
 
         if self.links.is_empty() {
             return false;
@@ -509,12 +509,12 @@ impl LinkHandler {
         }
     }
 
-    pub fn important_area(&self) -> cursive::Rect {
+    pub fn important_area(&self) -> cursive_core::Rect {
         if self.links.is_empty() {
-            cursive::Rect::from((0, 0))
+            cursive_core::Rect::from((0, 0))
         } else {
             let link = &self.links[self.focus];
-            cursive::Rect::from_size(link.position, (link.width, 1))
+            cursive_core::Rect::from_size(link.position, (link.width, 1))
         }
     }
 }
