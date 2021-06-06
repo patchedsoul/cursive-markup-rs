@@ -60,7 +60,7 @@ fn open_view<R: cursive_markup::Renderer + 'static>(
     });
 }
 
-fn create_cursive() -> cursive::Cursive {
+fn create_cursive() -> cursive::CursiveRunnable {
     use cursive::traits::{Nameable, Resizable};
 
     let mut s = cursive::default();
